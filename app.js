@@ -33,23 +33,72 @@ const courseSchema = new Schema({
 const Course = model('Course', courseSchema);
 
 //create new course
-const newCourse = new Course({
-    courseName: "English 101",
-    description: "Introduction to College-level writing.",
-    subjectArea: "English",
-    credits: 3
+// const newCourse = new Course({
+//     courseName: "English 101",
+//     description: "Introduction to College-level writing.",
+//     subjectArea: "English",
+//     credits: 3
+// });
+
+// newCourse.save()
+//     .then(doc => {
+//     console.log("New course created:", doc);
+//     })
+//     .catch(err => {
+//     console.error("Error creating course:", err);
+//     });
+
+
+//grab all db courses
+router.get("/courses", async(req,res) =>{
+    try{
+        const courses = await Course.find({});
+        res.send(courses);
+        console.log(courses);
+    }
+    catch (err){
+        console.log(err);
+    }
+
 });
 
-newCourse.save()
-    .then(doc => {
-    console.log("New course created:", doc);
-    })
-    .catch(err => {
-    console.error("Error creating course:", err);
-    });
+// grab single course
+router.get("/courses/:id", async (req,res) =>{
+    try{
+        const course = await Course.findById(req.params.id)
+        res.json(course);
+    }
+    catch (err){
+        res.status(400).send(err);
+    }
+});
 
+//create a course
+router.post("/courses", async(req,res) => {
+    try{
+        const course = await new Course(req.body);
+        await course.save();
+        res.status(201).json(course);
+        console.log(course);
+    }
+    catch(err){
+        res.status(400).send(err);
+    }
+})
 
-
+//update uses a put request
+router.put("/courses/:id", async(req,res) =>{
+    //to find song, request the id, then search for it
+    try{
+        const course = req.body
+        await Course.updateOne({_id: req.params.id}, course)
+        console.log(course)
+        res.sendStatus(204)
+    }
+    catch(err){
+            res.status(400).send(err)
+    }
+})
 
 
 
@@ -59,15 +108,15 @@ newCourse.save()
 
 
 // GET /courses — fetch all courses
-router.get("/courses", async (req, res) => {
-    try {
-        const courses = await Course.find();
-        res.json(courses);
-        } catch (err) {
-            console.error("Error fetching courses:", err);
-            res.status(500).json({ error: "Failed to fetch courses" });
-        }
-});
+// router.get("/courses", async (req, res) => {
+//     try {
+//         const courses = await Course.find();
+//         res.json(courses);
+//         } catch (err) {
+//             console.error("Error fetching courses:", err);
+//             res.status(500).json({ error: "Failed to fetch courses" });
+//         }
+// });
 
 
 
