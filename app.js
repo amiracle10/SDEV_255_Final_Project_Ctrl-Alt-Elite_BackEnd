@@ -100,6 +100,21 @@ router.put("/courses/:id", async(req,res) =>{
     }
 })
 
+router.delete('/courses/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedCourse = await Course.findByIdAndDelete(id);
+      if (deletedCourse) {
+        res.status(200).send({ message: 'Course deleted' });
+      } else {
+        res.status(404).send({ message: 'Course not found' });
+      }
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      res.status(500).send({ message: 'Server error' });
+    }
+  });
+
 
 
 //make api using routes
